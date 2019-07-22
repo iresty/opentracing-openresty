@@ -1,8 +1,0 @@
-return {
-	deletestats = true;
-	include = {
-		"/opentracing/[^/]+$";
-	};
-	exclude = {
-	};
-}

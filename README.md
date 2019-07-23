@@ -13,7 +13,7 @@ To fully understand this platform API, it's helpful to be familiar with the [Ope
 Install the package using `luarocks`
 
 ```bash
-luarocks install opentracing
+luarocks install opentracing-openresty
 ```
 
 
@@ -23,5 +23,5 @@ luarocks install opentracing
 
 
 ## License
-
+forked from https://github.com/Kong/opentracing-lua
 Apache License 2.0

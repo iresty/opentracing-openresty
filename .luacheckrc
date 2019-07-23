@@ -1,4 +1,4 @@
-std = "min"
+std = "ngx_lua"
 files["spec"] = {
 	std = "+busted";
 }

@@ -20,4 +20,4 @@ install:
 
 script:
   - luacheck .
-  - $PWD/bin/busted
+  - $PWD/bin/bursted

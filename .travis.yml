@@ -8,7 +8,7 @@ addons:
       - lua-check
 
 before_install:
-  - luarocks install busted
+  - sudo luarocks install busted
 
 install:
   wget -qO - https://openresty.org/package/pubkey.gpg | sudo apt-key add -

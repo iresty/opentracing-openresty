@@ -4,8 +4,8 @@ local opentracing_span_context = require "opentracing.span_context"
 
 local tracer_methods = {}
 local tracer_mt = {
-	__name = "opentracing.tracer";
-	__index = tracer_methods;
+	__name = "opentracing.tracer",
+	__index = tracer_methods,
 }
 
 local function is(object)
@@ -13,20 +13,20 @@ local function is(object)
 end
 
 local no_op_reporter = {
-	report = function() end;
+	report = function() end
 }
 local no_op_sampler = {
-	sample = function() return false end;
+	sample = function() return false end
 }
 
 -- Make injectors and extractors weakly keyed so that unreferenced formats get dropped
 local injectors_metatable = {
-	__name = "opentracing.tracer.injectors";
-	__mode = "k";
+	__name = "opentracing.tracer.injectors",
+	__mode = "k",
 }
 local extractors_metatable = {
-	__name = "opentracing.tracer.extractors";
-	__mode = "k";
+	__name = "opentracing.tracer.extractors",
+	__mode = "k",
 }
 
 local function new(reporter, sampler)
@@ -37,15 +37,15 @@ local function new(reporter, sampler)
 		sampler = no_op_sampler
 	end
 	return setmetatable({
-		injectors = setmetatable({}, injectors_metatable);
-		extractors = setmetatable({}, extractors_metatable);
-		reporter = reporter;
-		sampler = sampler;
+		injectors = setmetatable({}, injectors_metatable),
+		extractors = setmetatable({}, extractors_metatable),
+		reporter = reporter,
+		sampler = sampler,
 	}, tracer_mt)
 end
 
 function tracer_methods:start_span(name, options)
-	local context, child_of, references, tags, extra_tags, start_timestamp
+	local context, child_of, references, tags, start_timestamp
 	if options ~= nil then
 		child_of = options.child_of
 		references = options.references
@@ -74,16 +74,9 @@ function tracer_methods:start_span(name, options)
 	if child_of then
 		context = child_of:child()
 	else
-		local should_sample
-		should_sample, extra_tags = self.sampler:sample(name)
-		context = opentracing_span_context.new(nil, nil, nil, should_sample)
+		context = opentracing_span_context.new(nil, nil, nil)
 	end
 	local span = opentracing_span.new(self, context, name, start_timestamp)
-	if extra_tags then
-		for k, v in pairs(extra_tags) do
-			span:set_tag(k, v)
-		end
-	end
 	if tags then
 		for k, v in pairs(tags) do
 			span:set_tag(k, v)
@@ -96,7 +89,7 @@ end
 -- Can be overridden for e.g. testing
 function tracer_methods:time() -- luacheck: ignore 212
 	ngx.update_time()
-	return ngx.time()
+	return ngx.now()
 end
 
 function tracer_methods:report(span)

@@ -26,18 +26,6 @@ describe("opentracing.span", function()
 			new_span(tracer, context, nil)
 		end)
 	end)
-	it("asks for time from tracer when not passed", function()
-		local mock_tracer = mock({
-			time = function() return 42 end;
-		})
-		local span = new_span(mock_tracer, context, "foo", 0)
-		span:log("key", "value")
-		assert.spy(mock_tracer.time).was.called(1)
-		span:log_kv{key = "value"}
-		assert.spy(mock_tracer.time).was.called(2)
-		span:finish()
-		assert.spy(mock_tracer.time).was.called(3)
-	end)
 	it("doesn't allow constructing with invalid timestamp", function()
 		assert.has.errors(function()
 			new_span(tracer, context, "foo", {})

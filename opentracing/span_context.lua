@@ -68,7 +68,6 @@ function span_context_methods:child()
 		trace_id = self.trace_id,
 		span_id = generate_span_id(),
 		parent_id = self.span_id,
-		-- If parent was sampled, sample the child
 		baggage = self.baggage,
 	}, span_context_mt)
 end

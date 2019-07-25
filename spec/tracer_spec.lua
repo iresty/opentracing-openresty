@@ -14,44 +14,6 @@ describe("opentracing.tracer", function()
 			tracer:start_span(nil)
 		end)
 	end)
-	it("calls sampler for root traces", function()
-		local mock_sampler = mock {
-			sample = function() return false end;
-		}
-		local tracer = new_tracer(nil, mock_sampler)
-		tracer:start_span("foo")
-		assert.spy(mock_sampler.sample).was.called_with(mock_sampler, "foo")
-	end)
-	it("takes returned sampler tags into account", function()
-		local mock_sampler = mock {
-			sample = function()
-				return true, {
-					["sampler.type"] = "mock";
-				}
-			end;
-		}
-		local tracer = new_tracer(nil, mock_sampler)
-		local span = tracer:start_span("foo")
-		assert.spy(mock_sampler.sample).was.called_with(mock_sampler, "foo")
-		local tags = {}
-		for k, v in span:each_tag() do
-			tags[k] = v
-		end
-		assert.same({["sampler.type"] = "mock";}, tags)
-	end)
-	it("calls reporter at end of span", function()
-		local mock_sampler = mock {
-			sample = function() return true end;
-		}
-		local mock_reporter = mock {
-			report = function() end;
-		}
-		local tracer = new_tracer(mock_reporter, mock_sampler)
-		local span = tracer:start_span("foo")
-		assert.spy(mock_sampler.sample).was.called_with(mock_sampler, "foo")
-		span:finish()
-		assert.spy(mock_reporter.report).was.called_with(mock_reporter, span)
-	end)
 	it("allows passing in tags", function()
 		local tracer = new_tracer()
 		local tags = {

@@ -1,6 +1,6 @@
 --[[
 The internal data structure is modeled off the ZipKin Span JSON Structure
-This makes it cheaper to convert to JSON for submission to the ZipKin HTTP api;
+This makes it cheaper to convert to JSON for submission to the ZipKin HTTP api,
 which Jaegar also implements.
 You can find it documented in this OpenAPI spec:
 https://github.com/openzipkin/zipkin-api/blob/7e33e977/zipkin2-api.yaml#L280
@@ -8,8 +8,8 @@ https://github.com/openzipkin/zipkin-api/blob/7e33e977/zipkin2-api.yaml#L280
 
 local span_methods = {}
 local span_mt = {
-	__name = "opentracing.span";
-	__index = span_methods;
+	__name = "opentracing.span",
+	__index = span_methods,
 }
 
 local function is(object)
@@ -22,16 +22,16 @@ local function new(tracer, context, name, start_timestamp)
 	assert(type(name) == "string", "name should be a string")
 	assert(type(start_timestamp) == "number", "invalid starting timestamp")
 	return setmetatable({
-		tracer_ = tracer;
-		context_ = context;
-		name = name;
-		timestamp = start_timestamp;
-		duration = nil;
+		tracer_ = tracer,
+		context_ = context,
+		name = name,
+		timestamp = start_timestamp,
+		duration = nil,
 		-- Avoid allocations until needed
-		baggage = nil;
-		tags = nil;
-		logs = nil;
-		n_logs = 0;
+		baggage = nil,
+		tags = nil,
+		logs = nil,
+		n_logs = 0,
 	}, span_mt)
 end
 
@@ -50,8 +50,8 @@ end
 
 function span_methods:start_child_span(name, start_timestamp)
 	return self.tracer_:start_span(name, {
-		start_timestamp = start_timestamp;
-		child_of = self;
+		start_timestamp = start_timestamp,
+		child_of = self,
 	})
 end
 
@@ -65,9 +65,7 @@ function span_methods:finish(finish_timestamp)
 		assert(duration >= 0, "invalid finish timestamp")
 		self.duration = duration
 	end
-	if self.context_.should_sample then
-		self.tracer_:report(self)
-	end
+	self.tracer_:report(self)
 	return true
 end
 
@@ -116,9 +114,9 @@ function span_methods:log(key, value, timestamp)
 	end
 
 	local log = {
-		key = key;
-		value = value;
-		timestamp = timestamp;
+		key = key,
+		value = value,
+		timestamp = timestamp,
 	}
 
 	local logs = self.logs
@@ -154,9 +152,9 @@ function span_methods:log_kv(key_values, timestamp)
 	for key, value in pairs(key_values) do
 		n_logs = n_logs + 1
 		logs[n_logs] = {
-			key = key;
-			value = value;
-			timestamp = timestamp;
+			key = key,
+			value = value,
+			timestamp = timestamp,
 		}
 	end
 

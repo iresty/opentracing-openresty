@@ -16,8 +16,8 @@ end
 
 local span_context_methods = {}
 local span_context_mt = {
-	__name = "opentracing.span_context";
-	__index = span_context_methods;
+	__name = "opentracing.span_context",
+	__index = span_context_methods,
 }
 
 local function is(object)
@@ -25,14 +25,14 @@ local function is(object)
 end
 
 local baggage_mt = {
-	__name = "opentracing.span_context.baggage";
+	__name = "opentracing.span_context.baggage",
 	__newindex = function()
 		error("attempt to set immutable baggage")
-	end;
+	end
 }
 
 -- Public constructor
-local function new(trace_id, span_id, parent_id, should_sample, baggage)
+local function new(trace_id, span_id, parent_id, baggage)
 	if trace_id == nil then
 		trace_id = generate_trace_id()
 	else
@@ -56,22 +56,20 @@ local function new(trace_id, span_id, parent_id, should_sample, baggage)
 		baggage = setmetatable(new_baggage, baggage_mt)
 	end
 	return setmetatable({
-		trace_id = trace_id;
-		span_id = span_id;
-		parent_id = parent_id;
-		should_sample = should_sample;
-		baggage = baggage;
+		trace_id = trace_id,
+		span_id = span_id,
+		parent_id = parent_id,
+		baggage = baggage,
 	}, span_context_mt)
 end
 
 function span_context_methods:child()
 	return setmetatable({
-		trace_id = self.trace_id;
-		span_id = generate_span_id();
-		parent_id = self.span_id;
+		trace_id = self.trace_id,
+		span_id = generate_span_id(),
+		parent_id = self.span_id,
 		-- If parent was sampled, sample the child
-		should_sample = self.should_sample;
-		baggage = self.baggage;
+		baggage = self.baggage,
 	}, span_context_mt)
 end
 
@@ -87,11 +85,10 @@ function span_context_methods:clone_with_baggage_item(key, value)
 	end
 	new_baggage[key] = value
 	return setmetatable({
-		trace_id = self.trace_id;
-		span_id = self.span_id;
-		parent_id = self.parent_id;
-		should_sample = self.should_sample;
-		baggage = setmetatable(new_baggage, baggage_mt);
+		trace_id = self.trace_id,
+		span_id = self.span_id,
+		parent_id = self.parent_id,
+		baggage = setmetatable(new_baggage, baggage_mt),
 	}, span_context_mt)
 end
 

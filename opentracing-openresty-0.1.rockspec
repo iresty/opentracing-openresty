@@ -2,7 +2,7 @@ package = "opentracing-openresty"
 version = "0.1-0"
 
 source = {
-    url = "git://github.com/iresty/opentracing-openresty.git",
+    url = "https://github.com/iresty/opentracing-openresty.git",
     tag = "v0.1",
 }
 
